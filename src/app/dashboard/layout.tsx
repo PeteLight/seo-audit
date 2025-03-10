@@ -1,12 +1,13 @@
 'use client';
-import Sidebar from '@/components/Sidebar';
+
+import { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import { useAuth } from '@/context/AuthContext';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+// Import Sidebar dynamically (client side only)
+const Sidebar = dynamic(() => import('@/components/Sidebar'), { ssr: false });
+
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { user } = useAuth();
 
   return (

@@ -2,7 +2,6 @@
 
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
-import Sidebar from '@/components/Sidebar';
 import { useState } from 'react';
 
 interface Report {
@@ -29,7 +28,6 @@ export default function DashboardPage() {
 
   return (
     <div className="flex">
-      <Sidebar />
       <div className="flex-grow p-6">
         <h1 className="mb-4 text-2xl font-semibold">Dashboard</h1>
         {user && (
