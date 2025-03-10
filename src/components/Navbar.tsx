@@ -1,10 +1,19 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Navbar() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // Clear the user state
+    logout();
+    // Redirect to landing page (or '/login' if preferred)
+    router.push('/');
+  };
 
   return (
     <nav className="flex items-center justify-between bg-white px-6 py-4 shadow-md">
@@ -23,9 +32,11 @@ export default function Navbar() {
             <Link href="/dashboard/settings" className="hover:text-blue-500">
               Settings
             </Link>
-            <Link href="/logout" className="hover:text-blue-500">
+            <button
+              onClick={handleLogout}
+              className="hover:text-blue-500 focus:outline-none">
               Logout
-            </Link>
+            </button>
           </>
         ) : (
           <>

@@ -1,11 +1,11 @@
-// src/context/AuthContext.tsx
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface User {
   email: string;
-  name?: string; // Added optional name property
+  name?: string;
+  // Add additional properties as needed
 }
 
 interface AuthContextType {
@@ -20,10 +20,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const login = (userData: User) => {
+    // Optionally store user data to localStorage or cookies here
     setUser(userData);
   };
 
   const logout = () => {
+    // Clear any persisted user data if stored
+    // For example: localStorage.removeItem('user');
     setUser(null);
   };
 
