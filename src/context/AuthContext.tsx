@@ -1,20 +1,25 @@
 'use client';
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  ReactNode,
+} from 'react';
 
 export interface User {
-  id: string; // Unique identifier for the user
-  email: string; // User's email address
-  name?: string; // User's display name (optional)
-  businessName: string; // Name of the business the user represents
-  websiteURL: string; // Primary website for the business
-  location: string; // Business location (city, state, country, etc.)
-  businessType: string; // Type of business (e.g., Sole Trader, LLC)
-  role?: 'user' | 'admin'; // Optional role property for access levels
-  registrationDate?: string; // ISO date string for when the user registered
-  subscriptionPlan?: string; // E.g., Free, Pro, Enterprise (if applicable)
+  id?: string;
+  email: string;
+  name?: string;
+  businessName?: string;
+  websiteURL?: string;
+  location?: string;
+  businessType?: string;
+  role?: 'user' | 'admin';
+  registrationDate?: string;
+  subscriptionPlan?: string;
   preferences?: {
-    // Optional preferences object for settings
     theme?: 'light' | 'dark';
     language?: string;
     notificationsEnabled?: boolean;
@@ -32,15 +37,22 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
+  // On mount, try to rehydrate user from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   const login = (userData: User) => {
-    // Optionally store user data to localStorage or cookies here
     setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logout = () => {
-    // Clear any persisted user data if stored
-    // For example: localStorage.removeItem('user');
     setUser(null);
+    localStorage.removeItem('user');
   };
 
   return (

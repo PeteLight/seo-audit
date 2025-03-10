@@ -1,8 +1,8 @@
 'use client';
 
-import { useAuth } from '@/context/AuthContext';
+import { FormEvent, useState } from 'react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 interface Report {
   id: number;
@@ -14,9 +14,19 @@ interface Report {
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  // State for mock reports
   const [reports, setReports] = useState<Report[]>([]);
 
-  // Define a mock report for testing
+  // Form input state for a new SEO audit
+  const [websiteUrl, setWebsiteUrl] = useState('');
+  const [websiteTitle, setWebsiteTitle] = useState('');
+  const [targetKeywords, setTargetKeywords] = useState('');
+
+  // Local state for error and success messages
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  // A mock report to simulate successful API response
   const mockReport: Report = {
     id: 1,
     overallScore: 78,
@@ -26,14 +36,43 @@ export default function DashboardPage() {
       'Improve image optimization and reduce server response time.',
   };
 
+  // Handle form submission for running a new SEO audit
+  const handleAuditSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    // Clear previous messages
+    setError('');
+    setSuccess('');
+
+    try {
+      // Validate that the URL starts with "http" or "https"
+      if (!websiteUrl.startsWith('http')) {
+        throw new Error(
+          'Please enter a valid URL (must start with http or https).'
+        );
+      }
+      // Simulate an API call with a delay (replace with real API call later)
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Simulate a successful audit by setting the mock report
+      setReports([mockReport]);
+      setSuccess('SEO audit has been run successfully!');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred.');
+      }
+    }
+  };
+
   return (
     <div className="flex-grow p-6">
       <h1 className="mb-4 text-2xl font-semibold">Dashboard</h1>
       {user && (
-        <p className="mb-4 text-lg">Welcome, {user.name || user.email}!</p>
+        <p className="mb-6 text-lg">Welcome, {user.name || user.email}!</p>
       )}
 
-      {/* Button to simulate report data */}
+      {/* Button to simulate a report (for quick testing) */}
       <div className="mb-6">
         <button
           onClick={() => setReports([mockReport])}
@@ -43,17 +82,19 @@ export default function DashboardPage() {
       </div>
 
       {reports.length === 0 ? (
-        // New users (no reports) view
+        // New Users (No Reports): Show the website details form
         <section className="p-6 bg-white rounded-lg shadow">
           <h2 className="mb-4 text-xl font-bold">No Reports Yet</h2>
           <p className="mb-4 text-gray-700">
-            It looks like you haven’t analyzed any websites yet.
+            It looks like you haven’t analyzed any websites yet. Please provide
+            your website details below to start your first SEO audit.
           </p>
-          <p className="mb-4 text-gray-700">
-            Please provide your website details below to start your first SEO
-            audit.
-          </p>
-          <form className="space-y-4">
+
+          {/* Display error and success messages */}
+          {error && <p className="mb-2 text-sm text-red-600">{error}</p>}
+          {success && <p className="mb-2 text-sm text-green-600">{success}</p>}
+
+          <form onSubmit={handleAuditSubmit} className="space-y-4">
             <div>
               <label
                 htmlFor="websiteUrl"
@@ -64,11 +105,14 @@ export default function DashboardPage() {
                 id="websiteUrl"
                 type="url"
                 placeholder="https://example.com"
+                value={websiteUrl}
+                onChange={(e) => setWebsiteUrl(e.target.value)}
                 className="mt-1 w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
               <p className="mt-1 text-xs text-gray-500">
-                Enter the full URL of your website.
+                Enter the full URL of your website (must start with http or
+                https).
               </p>
             </div>
             <div>
@@ -81,11 +125,13 @@ export default function DashboardPage() {
                 id="websiteTitle"
                 type="text"
                 placeholder="Your Website Title"
+                value={websiteTitle}
+                onChange={(e) => setWebsiteTitle(e.target.value)}
                 className="mt-1 w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
               <p className="mt-1 text-xs text-gray-500">
-                This will be used to personalize your report.
+                This will be used to personalize your SEO audit report.
               </p>
             </div>
             <div>
@@ -98,10 +144,12 @@ export default function DashboardPage() {
                 id="targetKeywords"
                 type="text"
                 placeholder="e.g., local SEO, best pizza near me"
+                value={targetKeywords}
+                onChange={(e) => setTargetKeywords(e.target.value)}
                 className="mt-1 w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Provide keywords you want to focus on for SEO.
+                Enter keywords you want to focus on for SEO optimization.
               </p>
             </div>
             <button
@@ -112,9 +160,8 @@ export default function DashboardPage() {
           </form>
         </section>
       ) : (
-        // Existing users (with reports) view
+        // Existing Users (With Reports): Show the latest report overview and navigation cards
         <>
-          {/* Latest Report Overview at the Top */}
           <section className="mb-8 p-6 bg-white rounded-lg shadow">
             <h2 className="mb-4 text-xl font-bold">Latest Report Overview</h2>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -142,8 +189,6 @@ export default function DashboardPage() {
               </span>
             </div>
           </section>
-
-          {/* Navigation Cards */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Link
               href="/dashboard/audits"
