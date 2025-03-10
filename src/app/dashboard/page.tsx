@@ -72,6 +72,10 @@ export default function DashboardPage() {
         <p className="mb-6 text-lg">Welcome, {user.name || user.email}!</p>
       )}
 
+      {/* Always display error and success messages */}
+      {error && <p className="mb-2 text-sm text-red-600">{error}</p>}
+      {success && <p className="mb-2 text-sm text-green-600">{success}</p>}
+
       {/* Button to simulate a report (for quick testing) */}
       <div className="mb-6">
         <button
@@ -89,12 +93,7 @@ export default function DashboardPage() {
             It looks like you haven’t analyzed any websites yet. Please provide
             your website details below to start your first SEO audit.
           </p>
-
-          {/* Display error and success messages */}
-          {error && <p className="mb-2 text-sm text-red-600">{error}</p>}
-          {success && <p className="mb-2 text-sm text-green-600">{success}</p>}
-
-          <form onSubmit={handleAuditSubmit} className="space-y-4">
+          <form onSubmit={handleAuditSubmit} className="space-y-4" noValidate>
             <div>
               <label
                 htmlFor="websiteUrl"
