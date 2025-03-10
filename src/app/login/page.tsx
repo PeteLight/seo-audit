@@ -2,8 +2,8 @@
 
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -13,10 +13,9 @@ export default function LoginPage() {
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    // Simulate login
-    login({ email });
+    // Simulate login by updating authentication state
+    login({ email, name: email.split('@')[0] });
     console.log('Logged in with:', { email, password });
-
     // Redirect to dashboard
     router.push('/dashboard');
   }
@@ -34,10 +33,10 @@ export default function LoginPage() {
           <input
             id="email"
             type="email"
+            placeholder="your@email.com"
             className="mt-1 w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
             required
           />
         </div>
@@ -50,10 +49,10 @@ export default function LoginPage() {
           <input
             id="password"
             type="password"
+            placeholder="••••••••"
             className="mt-1 w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
             required
           />
         </div>
