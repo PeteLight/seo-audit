@@ -2,10 +2,23 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-interface User {
-  email: string;
-  name?: string;
-  // Add additional properties as needed
+export interface User {
+  id: string; // Unique identifier for the user
+  email: string; // User's email address
+  name?: string; // User's display name (optional)
+  businessName: string; // Name of the business the user represents
+  websiteURL: string; // Primary website for the business
+  location: string; // Business location (city, state, country, etc.)
+  businessType: string; // Type of business (e.g., Sole Trader, LLC)
+  role?: 'user' | 'admin'; // Optional role property for access levels
+  registrationDate?: string; // ISO date string for when the user registered
+  subscriptionPlan?: string; // E.g., Free, Pro, Enterprise (if applicable)
+  preferences?: {
+    // Optional preferences object for settings
+    theme?: 'light' | 'dark';
+    language?: string;
+    notificationsEnabled?: boolean;
+  };
 }
 
 interface AuthContextType {
