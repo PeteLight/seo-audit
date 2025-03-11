@@ -17,9 +17,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const handleLogout = () => {
-    // Clear authentication state
     logout();
-    // Redirect to the landing page
     router.push('/');
   };
 
@@ -27,6 +25,7 @@ export default function Sidebar() {
     setCollapsed(!collapsed);
   };
 
+  // SidebarLink component now uses the new Link syntax
   function SidebarLink({
     href,
     label,
@@ -38,30 +37,22 @@ export default function Sidebar() {
   }) {
     const isActive = pathname === href;
     return (
-      <Link href={href} legacyBehavior>
-        <a
-          className={`flex items-center gap-2 hover:bg-gray-200 p-2 rounded transition-colors ${
-            collapsed ? 'justify-center' : ''
-          } ${isActive ? 'bg-gray-300' : ''}`}>
-          {icon && <span className="h-5 w-5">{icon}</span>}
-          {!collapsed && <span>{label}</span>}
-        </a>
+      <Link
+        href={href}
+        className={`flex items-center gap-2 hover:bg-gray-200 p-2 rounded transition-colors ${
+          collapsed ? 'justify-center' : ''
+        } ${isActive ? 'bg-gray-300' : ''}`}>
+        {icon && <span className="h-5 w-5">{icon}</span>}
+        {!collapsed && <span>{label}</span>}
       </Link>
     );
   }
 
   return (
     <aside
-      className={`
-        bg-gray-100
-        h-screen
-        p-2
-        flex
-        flex-col
-        transition-all
-        duration-300
-        ${collapsed ? 'w-16' : 'w-64'}
-      `}>
+      className={`bg-gray-100 h-screen p-2 flex flex-col transition-all duration-300 ${
+        collapsed ? 'w-16' : 'w-64'
+      }`}>
       {/* Collapse/Expand Button */}
       <button
         onClick={toggleSidebar}
@@ -102,7 +93,6 @@ export default function Sidebar() {
             label="Settings"
             icon={<Cog6ToothIcon />}
           />
-          {/* Logout Button */}
           <button
             onClick={handleLogout}
             type="button"
