@@ -1,53 +1,67 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { useSession, signOut } from 'next-auth/react';
+// Using Heroicons v2 (ensure these are installed and imported correctly)
+import {
+  UserGroupIcon,
+  Cog8ToothIcon,
+  ArrowRightOnRectangleIcon,
+  ArrowLeftOnRectangleIcon,
+} from '@heroicons/react/24/outline';
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
-  const router = useRouter();
-
-  const handleLogout = () => {
-    // Clear the user state
-    logout();
-    // Redirect to landing page (or '/login' if preferred)
-    router.push('/');
-  };
+  const { data: session, status } = useSession();
 
   return (
-    <nav className="flex items-center justify-between bg-white px-6 py-4 shadow-md">
-      <div className="text-xl font-semibold">
-        <Link href="/">SEO Audit Pro</Link>
-      </div>
-      <div className="space-x-4">
-        {user ? (
-          <>
-            <span className="text-gray-700">
-              Welcome, {user.name || user.email}
-            </span>
-            <Link href="/dashboard/account" className="hover:text-blue-500">
-              Account
-            </Link>
-            <Link href="/dashboard/settings" className="hover:text-blue-500">
-              Settings
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="hover:text-blue-500 focus:outline-none">
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link href="/login" className="hover:text-blue-500">
-              Login
-            </Link>
-            <Link href="/register" className="hover:text-blue-500">
-              Register
-            </Link>
-          </>
-        )}
+    <nav className="bg-white shadow p-4">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <Link href="/" className="text-2xl font-bold">
+          SEO Audit Pro
+        </Link>
+        <div className="flex space-x-4 items-center">
+          {status === 'loading' ? (
+            <span>Loading...</span>
+          ) : session ? (
+            // Authenticated state: show Dashboard, Account, Settings, and Logout
+            <>
+              <Link
+                href="/dashboard"
+                className="flex items-center text-blue-600 hover:underline">
+                <UserGroupIcon className="h-5 w-5 mr-1" /> Dashboard
+              </Link>
+              <Link
+                href="/account"
+                className="flex items-center text-blue-600 hover:underline">
+                <Cog8ToothIcon className="h-5 w-5 mr-1" /> Account
+              </Link>
+              <Link
+                href="/settings"
+                className="flex items-center text-blue-600 hover:underline">
+                <Cog8ToothIcon className="h-5 w-5 mr-1" /> Settings
+              </Link>
+              <button
+                onClick={() => signOut()}
+                className="flex items-center text-blue-600 hover:underline">
+                <ArrowRightOnRectangleIcon className="h-5 w-5 mr-1" /> Logout
+              </button>
+            </>
+          ) : (
+            // Unauthenticated state: show Login and Register
+            <>
+              <Link
+                href="/login"
+                className="flex items-center text-blue-600 hover:underline">
+                <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-1" /> Login
+              </Link>
+              <Link
+                href="/register"
+                className="flex items-center text-blue-600 hover:underline">
+                <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-1" /> Register
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
