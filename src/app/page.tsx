@@ -1,44 +1,44 @@
-import Image from 'next/image';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LandingPage() {
-  return (
-    <main className="mt-8 md:mt-16">
-      {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        {/* Text + CTA */}
-        <div className="flex flex-col justify-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-            Boost Your Local SEO
-          </h1>
-          <p className="mt-4 text-lg text-gray-700 md:max-w-md">
-            Get actionable insights and easy-to-follow recommendations to
-            improve your website’s ranking and stand out locally.
-          </p>
-          <div className="mt-6">
-            {/* Updated to link to the registration page */}
-            <Link
-              href="/register"
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md text-lg font-medium hover:bg-blue-700">
-              Get Started
-            </Link>
-          </div>
-        </div>
+  const { user } = useAuth();
+  const router = useRouter();
 
-        {/* Illustration */}
-        <div className="flex justify-center">
-          {/* Replace with your own image path or an illustration component */}
-          <Image
-            src="/assets/hero-illustration.png"
-            alt="SEO Audit Illustration"
-            width={500}
-            height={400}
-            priority
-          />
+  useEffect(() => {
+    // If a user is logged in, redirect them to the dashboard
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
+
+  // If the user is logged in, don't render the landing page content
+  if (user) return null;
+
+  return (
+    <main className="py-12">
+      {/* Hero Section */}
+      <section className="text-center px-4">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900">
+          Welcome to SEO Audit Pro
+        </h1>
+        <p className="mt-4 text-lg text-gray-700">
+          Simplify your SEO audits and boost your local search rankings.
+        </p>
+        <div className="mt-6">
+          <Link
+            href="/register"
+            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md text-lg font-medium hover:bg-blue-700">
+            Get Started
+          </Link>
         </div>
       </section>
 
-      {/* Features / Steps Section */}
+      {/* How It Works Section */}
       <section className="mt-16 bg-gray-50 py-12">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900">
@@ -47,9 +47,7 @@ export default function LandingPage() {
           <p className="mt-2 text-center text-gray-600">
             Simple steps to get your SEO audits up and running.
           </p>
-
           <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Step 1 */}
             <div className="bg-white p-6 rounded-lg shadow">
               <h3 className="text-xl font-semibold text-gray-800">Sign Up</h3>
               <p className="mt-2 text-gray-600">
@@ -57,8 +55,6 @@ export default function LandingPage() {
                 business or website.
               </p>
             </div>
-
-            {/* Step 2 */}
             <div className="bg-white p-6 rounded-lg shadow">
               <h3 className="text-xl font-semibold text-gray-800">
                 Run Your Audit
@@ -68,8 +64,6 @@ export default function LandingPage() {
                 knowledge required.
               </p>
             </div>
-
-            {/* Step 3 */}
             <div className="bg-white p-6 rounded-lg shadow">
               <h3 className="text-xl font-semibold text-gray-800">
                 Get Insights
