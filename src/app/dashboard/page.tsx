@@ -17,7 +17,6 @@ export default function DashboardPage() {
     websiteTitle: string;
     targetKeywords: string;
   }) => {
-    // Validate URL
     if (!/^https?:\/\//.test(data.websiteURL)) {
       setError('Please enter a valid URL (including http:// or https://).');
       return;
@@ -25,9 +24,8 @@ export default function DashboardPage() {
     setError('');
     setLoading(true);
     try {
-      // Simulate API call delay (2 seconds)
+      // Simulate an API call delay (2 seconds)
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      // Generate a mock report with friendly, non-jargon copy
       const mockReport: Report = {
         overallScore: 75,
         loadTime: 2.3,
@@ -35,17 +33,17 @@ export default function DashboardPage() {
         recommendations: [
           {
             title: 'Better Page Titles',
-            description: 'Make sure your pages have clear, descriptive titles.',
+            description: 'Ensure each page has a clear, descriptive title.',
           },
           {
             title: 'Optimize Images',
             description:
-              'Compress images and use modern formats to speed up loading.',
+              'Compress images and use modern formats to speed up load times.',
           },
           {
             title: 'Minify Code',
             description:
-              'Shorten your CSS and JavaScript files for faster page loads.',
+              'Minify your CSS and JavaScript to improve page speed.',
           },
         ],
       };
