@@ -1,26 +1,18 @@
-export const mockReports = [
+export const mockReportData = [
   {
     id: 1,
+    title: 'SEO Report - March 2024',
     website: 'example.com',
-    seoScore: 85,
-    date: '2024-03-01',
+    date: '2024-03-15',
+    score: 85,
+    details: "This report evaluates your site's SEO performance in March.",
   },
   {
     id: 2,
-    website: 'businesssite.com',
-    seoScore: 78,
-    date: '2024-02-28',
-  },
-  {
-    id: 3,
-    website: 'localshop.net',
-    seoScore: 92,
-    date: '2024-02-25',
-  },
-  {
-    id: 4,
-    website: 'startup.io',
-    seoScore: 80,
-    date: '2024-02-22',
+    title: 'SEO Report - February 2024',
+    website: 'example.com',
+    date: '2024-02-15',
+    score: 82,
+    details: "This report evaluates your site's SEO performance in February.",
   },
 ];
