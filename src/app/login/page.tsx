@@ -23,8 +23,15 @@ export default function LoginPage() {
 
     try {
       console.log('Submitting login with:', { email, password }); // Debugging
-      await login(email, password);
-      router.push('/dashboard');
+      const isAuthenticated = await login(email, password);
+
+      if (isAuthenticated) {
+        console.log('Login successful, redirecting to dashboard');
+        router.push('/dashboard'); // Redirect **only** if login is successful
+      } else {
+        console.error('Invalid credentials, staying on login page');
+        setError('Invalid email or password. Please try again.');
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error('Login failed:', error.message);

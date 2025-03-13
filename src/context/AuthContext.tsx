@@ -14,23 +14,12 @@ export interface User {
   id?: string;
   email: string;
   name?: string;
-  businessName?: string;
-  websiteURL?: string;
-  location?: string;
-  businessType?: string;
   role?: 'user' | 'admin';
-  registrationDate?: string;
-  subscriptionPlan?: string;
-  preferences?: {
-    theme?: 'light' | 'dark';
-    language?: string;
-    notificationsEnabled?: boolean;
-  };
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -39,19 +28,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
-  // Ensure logout is stable
   const logout = useCallback(() => {
     setUser(null);
     localStorage.removeItem('token');
     router.push('/login');
   }, [router]);
 
-  // Ensure fetchUserProfile is stable and includes logout as a dependency
   const fetchUserProfile = useCallback(
     async (token: string) => {
       try {
-        console.log('Fetching user profile with token:', token); // Debugging
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/profile`,
           {
@@ -64,7 +51,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         const profileData = await response.json();
-        console.log('User profile fetched successfully:', profileData); // Debugging
         setUser(profileData.user);
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -77,43 +63,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
-      console.log('Stored token found:', storedToken); // Debugging
       fetchUserProfile(storedToken);
-    } else {
-      console.log('No stored token found.'); // Debugging
     }
   }, [fetchUserProfile]);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      console.log('Attempting login with:', { email, password }); // Debugging
-
       if (!email || !password) {
-        console.error('Error: Email or Password is missing');
-        return;
+        alert('Email and password are required.');
+        return false;
+      }
+
+      if (useMockData) {
+        if (email === 'mockuser@example.com' && password === 'test123') {
+          const mockUser: User = {
+            id: 'mock-id',
+            email: 'mockuser@example.com',
+            name: 'Mock User',
+            role: 'user',
+          };
+          localStorage.setItem('token', 'mock-token');
+          setUser(mockUser);
+          return true;
+        } else {
+          alert('Invalid email or password');
+          return false;
+        }
       }
 
       const payload = { email, password };
-      console.log('Payload being sent:', JSON.stringify(payload)); // Debugging
-
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload), // Correct payload structure
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        throw new Error('Invalid email or password');
+        alert('Invalid email or password');
+        return false;
       }
 
       const { token } = await response.json();
-      console.log('Login successful, token received:', token); // Debugging
-
       localStorage.setItem('token', token);
       await fetchUserProfile(token);
-      router.push('/dashboard');
+      return true;
     } catch (error) {
       console.error('Login failed:', error);
+      return false;
     }
   };
 
